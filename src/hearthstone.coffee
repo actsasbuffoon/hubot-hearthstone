@@ -5,8 +5,8 @@
 #   None
 #
 # Commands:
-#   @<Hearthstone card> - Return <Hearthstone card>'s stats: name - mana - race - type - attack/hlth - descr
-#   @more <Hearthstone card> - Return more of the <Hearthstone card>'s stats
+#   hearthstone me <Hearthstone card> - Return <Hearthstone card>'s stats: name - mana - race - type - attack/hlth - descr
+#   hearthstone me moar <Hearthstone card> - Return more of the <Hearthstone card>'s stats
 #
 # Author:
 #   sylturner
@@ -18,7 +18,7 @@ module.exports = (robot) ->
     json.filter (card) ->
       card.name.toLowerCase() is name.toLowerCase()
 
-  robot.hear /^@(more )*(.+)/, (msg) ->
+  robot.hear /^hearthstone me (moar )*(.+)/, (msg) ->
     more = msg.match[1]
     name = msg.match[2]
     additional = more != undefined
