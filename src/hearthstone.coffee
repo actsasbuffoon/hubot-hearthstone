@@ -12,6 +12,9 @@
 #   sylturner
 #
 
+fs = require 'fs'
+path = require 'path'
+
 module.exports = (robot) ->
 
   robot.getByName = (json, name) ->
@@ -25,11 +28,12 @@ module.exports = (robot) ->
     robot.fetchCard msg, name, (card) ->
       robot.sendCard(card, msg, additional)
 
+  fs.readFile path.join(__dirname, "cards.json"), (err, data)->
+    robot.cards = JSON.parse(data)
+
   robot.fetchCard = (msg, name, callback) ->
-    msg.http('http://hearthstonecards.herokuapp.com/hearthstone.json').get() (err, res, body) ->
-      data = JSON.parse(body)
-      card = robot.getByName(data, name)
-      callback(card)
+    card = robot.getByName(robot.cards, name)
+    callback(card)
 
   robot.sendCard = (card, msg, additional) ->
     if card.length > 0
