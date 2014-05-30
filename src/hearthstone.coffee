@@ -14,6 +14,7 @@
 
 fs = require 'fs'
 path = require 'path'
+lunr = require 'lunr'
 
 module.exports = (robot) ->
 
@@ -28,12 +29,32 @@ module.exports = (robot) ->
     robot.fetchCard msg, name, (card) ->
       robot.sendCard(card, msg, additional)
 
+  robot.cardIndex = lunr ->
+    @field 'name', boost: 10
+    @field 'descr', boost: 2
+    @field 'flavor'
+    @field 'id'
+
   fs.readFile path.join(__dirname, "cards.json"), (err, data)->
     robot.cards = JSON.parse(data)
+    robot.cards.forEach (card, idx)->
+      robot.cardIndex.add
+        id: idx,
+        name: card.name,
+        descr: card.descr,
+        flavor: card.flavorText
 
   robot.fetchCard = (msg, name, callback) ->
     card = robot.getByName(robot.cards, name)
-    callback(card)
+    if card.length > 0
+      callback(card)
+    else
+      results = robot.cardIndex.search(name)
+      if results.length > 0
+        results.forEach (result)->
+          callback([robot.cards[result.ref]])
+      else
+        callback([])
 
   robot.sendCard = (card, msg, additional) ->
     if card.length > 0
