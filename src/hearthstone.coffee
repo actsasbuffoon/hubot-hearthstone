@@ -58,9 +58,10 @@ module.exports = (robot) ->
 
   robot.sendCard = (card, msg, additional) ->
     if card.length > 0
-      msg.send "#{card[0].name} - Mana: #{card[0].mana} - Race: #{card[0].race} - Type: #{card[0].type} - Attack/Health: #{card[0].attack}/#{card[0].health} - Descr: #{card[0].descr}"
+      body = "#{card[0].name} - Mana: #{card[0].mana} - Race: #{card[0].race} - Type: #{card[0].type} - Attack/Health: #{card[0].attack}/#{card[0].health} - Descr: #{card[0].descr}"
       if additional
-        msg.send "Flavor: #{card[0].flavorText} Rarity: #{card[0].rarity}"
-        msg.send "http://hearthstonecards.herokuapp.com/cards/medium/#{card[0].image}.png"
+        body += "\nFlavor: #{card[0].flavorText} Rarity: #{card[0].rarity}"
+        body += "\nhttp://hearthstonecards.herokuapp.com/cards/medium/#{card[0].image}.png"
+      msg.send body
     else
       msg.send "I can't find that card"
